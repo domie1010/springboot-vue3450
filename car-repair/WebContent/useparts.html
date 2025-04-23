@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="renderer" content="webkit">
+<title></title>
+<link rel="stylesheet" href="css/pintuer.css">
+<link rel="stylesheet" href="css/admin.css">
+<script src="js/jquery.js"></script>
+<script src="js/pintuer.js"></script>
+ <script src="js/cookie_util.js"></script>
+<script type="text/javascript">
+	var user_id=getCookie("userId");
+	console.log(user_id);
+	if(user_id!=null){//用户ID存在    		
+			$(function (){
+				$.ajax({
+					url:"http://localhost:8080/car-repair/partsinfo/show.do",
+					type:"post",
+					data:{},
+					dataType:"json",
+					success:function(rs){
+						if(rs.status==0){
+							var cis=rs.data;
+							for(var i=0;i<cis.length;i++){
+								var id=cis[i].id;
+								var name=cis[i].name;
+								var photo=cis[i].photo;
+								var price=cis[i].price;
+								var num=cis[i].num;
+								if(num!=0){
+									var trs='<tr>';
+										trs+='<td>'+name+'</td>';
+										trs+='<td width="10%"><img src="images/'+photo+'" alt="" width="70" height="50" /></td>';
+										trs+='<td><font color="#00CC99">'+price+'</font></td>';
+										trs+='<td>'+num+'</td>';
+										trs+='<td><div class="button-group"> <a class="button border-main" onclick="use('+id+')"> 使用</a> </div></td>';
+										trs+='</tr>';
+									var $trs=$(trs);
+									$("#partslist").append($trs);									
+								}
+							}
+						}else{
+							alert("零件信息加载失败");
+						}
+					},
+					error:function(){
+						alert("发生异常，请稍后再试");
+					}
+				})
+			})
+
+
+			function use(id){
+				$.ajax({
+					url:"http://localhost:8080/car-repair/partsinfo/use.do",
+					type:"post",
+					data:{"id":id},
+					dataType:"json",
+					success:function(rs){
+						console.log("零件使用");
+						alert(rs.msg);
+						window.location.href="useparts.html";
+					},
+					error:function(){
+						alert("发生异常，请稍后再试");
+					}
+				})
+			}
+	}else{//用户ID不存在
+		top.location.href="http://localhost:8080/car-repair/login.html"
+	}
+</script>
+
+</head>
+<body>
+<form method="post" action="" id="listform">
+  <div class="panel admin-panel">
+    <div class="panel-head"><strong class="icon-reorder"> 零件使用</strong> <a href="" style="float:right; display:none;">添加字段</a></div>
+    <table class="table table-hover text-center">
+      <tr>
+      	<th>名称</th>
+        <th>图片</th>        
+        <th>单价</th>
+        <th>库存</th>
+        <th width="310">操作</th>
+      </tr>
+      <tbody id="partslist">
+
+      </tbody>
+    </table>
+  </div>
+</form>
+</body>
+</html>

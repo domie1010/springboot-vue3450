@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="renderer" content="webkit">
+<title></title>
+<link rel="stylesheet" href="css/pintuer.css">
+<link rel="stylesheet" href="css/admin.css">
+<script src="js/jquery.js"></script>
+<script src="js/pintuer.js"></script>
+ <script src="js/cookie_util.js"></script>
+     <script type="text/javascript">
+    	var user_id=getCookie("userId");
+		console.log(user_id);
+    	if(user_id!=null){//用户ID存在
+    		
+    	     	function showuser(){
+    	     		var slv = $("#user_name").val();
+    	     		$("#user_name").html("");
+    				console.log("选择用户");
+    	     		$.ajax({
+    	     			url:"http://localhost:8080/car-repair/user/show.do",
+    	     			type:"post",
+    	     			data:{},
+    	     			dataType:"json",
+    	     			success:function(rs){
+    	     					var users=rs.data;
+    	     					for(var i=0;i<users.length;i++){
+    	     						var id=users[i].id;
+    	     						var name=users[i].name;
+    	     						var type=users[i].type;
+    	     						var status=users[i].status;
+    	     						if(type==1 && status==0){
+    	     							var opt='<option value="'+id+'">';
+    	     							opt+=name;
+    	     							opt+='</option>';
+    	     							var $opt=$(opt);
+    	     							$("#user_name").append($opt);
+    	     							$("#user_name").val(slv);
+    	     						}
+    	     					}	
+    	     			},
+    	     			error:function(){
+    	     				alert("发生异常，请稍后再试");
+    	     			}
+    	     		})
+    			}
+    		
+    		
+    		
+    	     	function showplate(){
+    	     		var user_id=$("#user_name").val();
+    	     		var slv = $("#plate").val();
+    	     		$("#plate").html("");
+    	     		$.ajax({
+        				url:"http://localhost:8080/car-repair/carinfo/show.do",
+        				type:"post",
+        				data:{"user_id":user_id},
+        				dataType:"json",
+        				success:function(rs){
+        					if(rs.status==0){
+        						var cis=rs.data;
+        						for(var i=0;i<cis.length;i++){							
+        							var id=cis[i].id;
+        							var plate=cis[i].plate;
+        							var opt='<option value="'+id+'">';
+	     							opt+=plate;
+	     							opt+='</option>';
+	     							var $opt=$(opt);
+	     							$("#plate").append($opt);
+	     							$("#plate").val(slv);
+        						}
+        					}else{
+        						alert("车辆信息加载失败");
+        					}
+        				},
+        				error:function(){
+        					alert("发生异常，请稍后再试");
+        				}
+        			})		
+    	     	}
+    		
+    		
+    	     	function showcode(){
+    	     		var slv = $("#trouble_code").val();
+    	     		$("#trouble_code").html("");
+    	     		$.ajax({
+    	     			url:"http://localhost:8080/car-repair/troubleinfo/show.do",
+    	     			type:"post",
+    	     			data:{},
+    	     			dataType:"json",
+    	     			success:function(rs){
+    	     				if(rs.status==0){
+    	     					var troubles=rs.data;
+    	     					for(var i=0;i<troubles.length;i++){
+    	     						var id=troubles[i].id;
+    	     						var trouble_code=troubles[i].trouble_code;
+    	     						var trouble_name=troubles[i].trouble_name;
+    	     						var status=troubles[i].status;
+    	     						if(status==0){
+    	     							var opt='<option value="'+trouble_name+'">';
+    	     							opt+=trouble_code;
+    	     							opt+='</option>';
+    	     							var $opt=$(opt);
+    	     							$("#trouble_code").append($opt);
+    	     							$("#trouble_code").val(slv);
+    	     						}
+    	     					}
+    	     				}else{
+    	     					alert("故障信息加载失败");
+    	     				}
+    	     			},
+    	     			error:function(){
+    	     				alert("发生异常，请稍后再试");
+    	     			}
+    	     		})
+    	     	}
+    		
+    		
+    		
+				function add(){
+					var user_name=$('#user_name option:selected').text();//选中的文本
+					var plate=$('#plate option:selected').text();//选中的文本
+					var trouble_code=$('#trouble_code option:selected').text();//选中的文本
+					
+					var user_id=$("#user_name").val();
+					if(user_id==""){
+						alert("请选择用户")
+						return false;
+					}
+					
+					var plate_id=$("#plate").val();
+					if(plate_id==null || plate_id==""){
+						alert("请选择车牌")
+						return false;
+					}
+					
+					var trouble_name=$("#trouble_code").val();
+					if(trouble_name==""){
+						alert("请选择故障码")
+						return false;
+					}
+					
+					var contact=$("#contact").val();
+					if(contact==""){
+						alert("请输入联系人")
+						return false;
+					}
+					
+					var contact_way=$("#contact_way").val();
+					if(contact_way==""){
+						alert("请输入联系方式")
+						return false;
+					}
+					var remark=$("#remark").val();
+					$.ajax({
+						url:"http://localhost:8080/car-repair/orderinfo/add.do",
+						type:"post",
+						data:{"user_name":user_name,
+							"user_id":user_id,
+							"plate":plate,
+							"trouble_code":trouble_code,
+							"trouble_name":trouble_name,
+							"contact":contact,
+							"contact_way":contact_way,
+							"remark":remark},
+						dataType:"json",
+						success:function(rs){
+							console.log("订单信息添加");
+							alert(rs.msg);
+							window.location.href="orderlist.html";
+						},
+						error:function(){
+							alert("发生异常，请稍后再试");
+						}
+					})
+			};
+		}else{//用户ID不存在
+			top.location.href="login.html";
+		}
+    </script>  
+</head>
+<body>
+<div class="panel admin-panel">
+  <div class="panel-head" id="add"><strong><span class="icon-pencil-square-o"></span>订单信息</strong></div>
+  <div class="body-content">
+    <form method="post" class="form-x">  
+      <div class="form-group">
+        <div class="label">
+          <label>用户名：</label>
+        </div>
+        <div class="field">
+          <select onclick="showuser()" id="user_name" name="cid" class="input" style="width:150px; line-height:17px;">
+              <option value="">--请选择用户--</option>
+           </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="label">
+          <label>车牌：</label>
+        </div>
+        <div class="field">
+          <select onclick="showplate()" id="plate" name="cid" class="input" style="width:150px; line-height:17px;">
+              <option value="" class="input">--请选择车牌--</option>
+            </select>
+        </div>
+      </div>
+     
+      <div class="form-group">
+        <div class="label">
+          <label>故障码：</label>
+        </div>
+        <div class="field">
+          <select onclick="showcode()" id="trouble_code" name="cid" class="input" style="width:150px; line-height:17px;">
+              <option value="">--请选择故障码--</option>
+            </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="label">
+          <label>联系人：</label>
+        </div>
+        <div class="field">
+          <input type="text" class="input w50" value="" id="contact" />
+          <div class="tips"></div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="label">
+          <label>联系方式：</label>
+        </div>
+        <div class="field">
+          <input type="text" class="input w50" value="" id="contact_way"  />
+          <div class="tips"></div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="label">
+          <label>备注信息：</label>
+        </div>
+        <div class="field">
+          <textarea id="remark" class="input w50" style="height:120px;"></textarea>
+          <div class="tips"></div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="label">
+          <label></label>
+        </div>
+        <div class="field">
+          <input onclick="add()"  class="button bg-main icon-check-square-o" type="button" value="提交"> </input>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+</body></html>

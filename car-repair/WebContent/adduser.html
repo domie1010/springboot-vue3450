@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="renderer" content="webkit">
+    <title>用户信息</title>  
+    <link rel="stylesheet" href="css/pintuer.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <script src="js/jquery.js"></script>
+    <script src="js/pintuer.js"></script>
+    <script src="js/cookie_util.js"></script>
+     <script type="text/javascript">
+    	var user_id=getCookie("userId");
+		console.log(user_id);
+    	if(user_id!=null){//用户ID存在
+				function add(){
+					var name=$("#name").val();
+					var password=$("#password").val();
+					var type=$('input:radio[name="type"]:checked').val();
+					console.log(type);
+					$.ajax({
+						url:"http://localhost:8080/car-repair/user/add.do",
+						type:"post",
+						data:{"name":name,
+							"password":password,
+							"type":type
+						},
+						dataType:"json",
+						success:function(rs){
+							if(rs.status==0){
+								alert(rs.msg);
+								window.location.href="userlist.html";
+							}else{
+								alert(rs.msg);
+							}
+						},
+						error:function(){
+							alert("用户添加成功");
+						}
+					})				
+			};
+		}else{//用户ID不存在
+			top.location.href="login.html";
+		}
+    </script>   
+</head>
+<body>
+<div class="panel admin-panel">
+  <div class="panel-head"><strong><span class="icon-pencil-square-o"></span> 用户信息</strong></div>
+  <div class="body-content">
+    <form method="post" class="form-x" action="">
+      <div class="form-group">
+        <div class="label">
+          <label>用户名：</label>
+        </div>
+        <div class="field">
+          <input type="text" class="input w50" id="name" value="" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="label">
+          <label>密码：</label>
+        </div>
+        <div class="field">
+          <input type="text" class="input w50" id="password" value="" />
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="label">
+          <label>身份：</label>
+        </div>
+        <div class="field">
+          <input type="radio" name="type"  value="0" checked="checked"/>管理员
+          <input type="radio" name="type"  value="1" />普通用户
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="label">
+          <label></label>
+        </div>
+        <div class="field">
+          <button onclick="add()" class="button bg-main icon-check-square-o" type="submit"> 提交</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="renderer" content="webkit">
+<title></title>
+<link rel="stylesheet" href="css/pintuer.css">
+<link rel="stylesheet" href="css/admin.css">
+<script src="js/jquery.js"></script>
+<script src="js/pintuer.js"></script>
+<script type="text/javascript">
+$(function (){
+	$.ajax({
+		url:"http://localhost:8080/car-repair/user/show.do",
+		type:"post",
+		data:{},
+		dataType:"json",
+		success:function(rs){
+			if(rs.status==0){
+				var users=rs.data;
+				for(var i=0;i<users.length;i++){
+					var id=users[i].id;
+					var name=users[i].name;
+					var type=users[i].type;
+					var status=users[i].status;
+					var trs='<tr>';
+					trs+='<td style="text-align:left; padding-left:20px;">'+name+'</td>';
+					if(type==0){
+						trs+='<td>管理员</td>';
+					}else{
+						trs+='<td>普通用户</td>';
+					}
+					if(status==0){
+						trs+='<td><font color="#00CC99">启用</td>';
+						trs+='<td><div class="button-group"><a class="button border-red" href="javascript:void(0)" onclick="change('+id+')"> 禁用</a> </div></td>';
+					}else{
+						trs+='<td><font color="	#FF0000">禁用</td>';
+						trs+='<td><div class="button-group"><button class="button border-blue" href="javascript:void(0)" onclick="change('+id+')"> 启用</button> </div></td>';
+					}
+					trs+='</tr>';
+				var $trs=$(trs);
+				$("#userlist").append($trs);
+				console.log($trs.data("id"));
+				}
+			}else{
+				alert("用户信息加载失败");
+			}
+		},
+		error:function(){
+			alert("发生异常，请稍后再试");
+		}
+	})
+	
+})	
+
+</script>
+</head>
+<body>
+<form method="post" action="" id="listform">
+  <div class="panel admin-panel">
+    <div class="panel-head"><strong class="icon-reorder"> 用户信息</strong> <a href="" style="float:right; display:none;">添加字段</a></div>
+    <table class="table table-hover text-center">
+      <tr>
+        <th width="100" style="text-align:left; padding-left:20px;">用户名</th>
+        <th>身份</th>
+        <th>状态</th>
+        <th width="310">操作</th>
+      </tr>
+
+      <tbody id="userlist">
+        
+       </tbody>
+   		
+    </table>
+  </div>
+</form>
+
+<script type="text/javascript">	
+	function change(id){
+		console.log("用户"+id);
+		$.ajax({
+			url:"http://localhost:8080/car-repair/user/change.do",
+			type:"post",
+			data:{"id":id},
+			dataType:"json",
+			success:function(rs){
+				console.log("更改成功！");
+				if(rs.status==0){
+					alert(rs.msg);
+					window.location.href="userlist.html";
+				}else{
+					alert("状态更改失败");
+				}
+			},
+			error:function(){
+				alert("发生异常，请稍后再试");
+			}
+		})
+	};
+</script>
+
+
+</body>
+</html>

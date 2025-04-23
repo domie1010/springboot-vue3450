@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+ <mapper namespace="com.dao.PersonalInfoDao">
+	<update id="updatePersonalInfo" parameterType="com.entity.PersonalInfo">
+ 		update personal_info set real_name=#{real_name},sex=#{sex},birthday=#{birthday} 
+ 		,email=#{email},address=#{address},tel_num=#{tel_num},remark=#{remark}
+ 		where user_id=#{user_id}
+ 	</update>
+ 	
+ 	<select id="showPersonalInfo" parameterType="string" resultType="com.entity.PersonalInfo">
+ 		select * from personal_info where user_id=#{user_id}
+ 	</select>
+ 	
+ 	<insert id="addUserId" parameterType="com.entity.PersonalInfo">
+ 		insert into personal_info 
+ 		(user_id)
+ 		values
+ 		(#{user_id})
+ 	</insert>
+ </mapper>

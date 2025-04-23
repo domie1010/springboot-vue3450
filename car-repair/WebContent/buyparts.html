@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="renderer" content="webkit">
+<title></title>
+<link rel="stylesheet" href="css/pintuer.css">
+<link rel="stylesheet" href="css/admin.css">
+<script src="js/jquery.js"></script>
+<script src="js/pintuer.js"></script>
+<script type="text/javascript">
+	function buy(id){
+		$.ajax({
+			url:"http://localhost:8080/car-repair/partsinfo/buy.do",
+			type:"post",
+			data:{"id":id},
+			dataType:"json",
+			success:function(rs){
+				console.log("零件购买");
+				alert(rs.msg);
+			},
+			error:function(){
+				alert("发生异常，请稍后再试");
+			}
+		})
+	}
+
+</script>
+
+</head>
+<body>
+<form method="post" action="" id="listform">
+  <div class="panel admin-panel">
+    <div class="panel-head"><strong class="icon-reorder"> 零件购买</strong> <a href="" style="float:right; display:none;">添加字段</a></div>
+    <table class="table table-hover text-center">
+      <tr>
+      	<th>名称</th>
+        <th>图片</th>        
+        <th>单价</th>
+        <th width="310">操作</th>
+      </tr>
+      <volist name="list" id="vo">
+        <tr>
+          <td>轮胎</td>
+          <td width="10%"><img src="images/lt.png" alt="" width="70" height="50" /></td>         
+          <td><font color="#00CC99">￥200.0</font></td>
+          <td><div class="button-group"> <a class="button border-main" onclick="buy(1)"> 购买</a> </div></td>
+        </tr>
+        <tr>
+          <td>方向盘</td>
+          <td width="10%"><img src="images/fxp.png" alt="" width="70" height="50" /></td>         
+          <td><font color="#00CC99">￥150.0</font></td>
+          <td><div class="button-group"> <a class="button border-main" onclick="buy(2)"> 购买</a> </div></td>
+        </tr>
+        <tr>
+          <td>油表盘</td>
+          <td width="10%"><img src="images/yb.png" alt="" width="70" height="50" /></td>         
+          <td><font color="#00CC99">￥100.0</font></td>
+          <td><div class="button-group"> <a class="button border-main" onclick="buy(3)"> 购买</a> </div></td>
+        </tr>
+        <tr>
+          <td>变档杆</td>
+          <td width="10%"><img src="images/dw.png" alt="" width="70" height="50" /></td>         
+          <td><font color="#00CC99">￥100.0</font></td>
+          <td><div class="button-group"> <a class="button border-main" onclick="buy(4)"> 购买</a> </div></td>
+        </tr>
+         <tr>
+          <td>齿轮</td>
+          <td width="10%"><img src="images/cl.png" alt="" width="70" height="50" /></td>         
+          <td><font color="#00CC99">￥50.0</font></td>
+          <td><div class="button-group"> <a class="button border-main" onclick="buy(5)"> 购买</a> </div></td>
+        </tr>
+    </table>
+  </div>
+</form>
+</body>
+</html>

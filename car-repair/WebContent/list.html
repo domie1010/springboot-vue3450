@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="renderer" content="webkit">
+<title></title>
+<link rel="stylesheet" href="css/pintuer.css">
+<link rel="stylesheet" href="css/admin.css">
+<script src="js/jquery.js"></script>
+<script src="js/pintuer.js"></script>
+ <script src="js/cookie_util.js"></script>
+     <script type="text/javascript">
+    	var user_id=getCookie("userId");
+		console.log(user_id);
+    	if(user_id!=null){//用户ID存在    		
+    		$(function (){
+    			$.ajax({
+					url:"http://localhost:8080/car-repair/carinfo/show.do",
+					type:"post",
+					data:{"user_id":user_id},
+					dataType:"json",
+					success:function(rs){
+						if(rs.status==0){
+							var cis=rs.data;
+							for(var i=0;i<cis.length;i++){
+								var id=cis[i].id;
+								var plate=cis[i].plate;
+								var brand=cis[i].brand;
+								var model=cis[i].model;
+								var color=cis[i].color;
+								var price=cis[i].price;
+								var date=cis[i].date;
+								var remark=cis[i].remark;
+								var trs='<tr>';
+									trs+='<td style="text-align:left; padding-left:20px;">'+plate+'</td>';
+									trs+='<td width="10%">'+brand+'</td>';
+									trs+='<td>'+model+'</td>';
+									trs+='<td>'+color+'</td>';
+									trs+='<td>'+price+'</td>';
+									trs+='<td>'+date+'</td>';
+									trs+='<td><div class="button-group"> <a class="button border-main" href="update.html?id='+id+'"><span class="icon-edit"></span> 修改</a> <button class="button border-red" href="javascript:void(0)" onclick="del('+id+')"><span class="icon-trash-o"></span> 删除</button> </div></td>';
+									trs+='</tr>';
+								var $trs=$(trs);
+								$("#carinfos").append($trs);
+							}
+						}else{
+							alert("车辆信息加载失败");
+						}
+					},
+					error:function(){
+						alert("发生异常，请稍后再试");
+					}
+				})		
+				
+			})	
+				
+		}else{//用户ID不存在
+			top.location.href="http://localhost:8080/car-repair/login.html"
+		}
+    </script>  
+</head>
+<body>
+<form method="post" action="" id="listform">
+  <div class="panel admin-panel">
+    <div class="panel-head"><strong class="icon-reorder"> 车辆信息</strong> <a href="" style="float:right; display:none;">添加字段</a></div>
+
+    <table class="table table-hover text-center">
+      <tr>
+        <th width="100" style="text-align:left; padding-left:20px;">车牌</th>
+        <th>品牌</th>
+        <th>型号</th>
+        <th>颜色</th>
+        <th>价格</th>
+        <th width="10%">购买日期</th>
+        <th width="310">操作</th>
+      </tr>
+      <tbody id="carinfos">
+        
+       </tbody>
+
+    </table>
+  </div>
+</form>
+
+<script type="text/javascript">	
+		function del(id){
+			console.log("车辆删除id"+id);
+			$.ajax({
+				url:"http://localhost:8080/car-repair/carinfo/delete.do",
+				type:"post",
+				data:{"id":id},
+				dataType:"json",
+				success:function(rs){
+					console.log("删除成功！");
+					if(rs.status==0){
+						alert("车辆信息删除成功");
+						window.location.href="list.html";
+					}else{
+						alert("车辆信息删除失败");
+					}
+				},
+				error:function(){
+					alert("车辆信息删除成功");
+				}
+			})
+		
+		};	
+		
+</script>
+
+</body>
+</html>

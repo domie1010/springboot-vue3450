@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="renderer" content="webkit">
+<title></title>
+<link rel="stylesheet" href="css/pintuer.css">
+<link rel="stylesheet" href="css/admin.css">
+<script src="js/jquery.js"></script>
+<script src="laydate/laydate.js"></script>
+<script src="js/pintuer.js"></script>
+ <script src="js/cookie_util.js"></script>
+     <script type="text/javascript">
+    	var user_id=getCookie("userId");
+		console.log(user_id);
+    	if(user_id!=null){//用户ID存在    	    		
+    		var thisURL = document.URL;    
+			var getval =thisURL.split('?')[1]; 
+			var id= getval.split("=")[1]; 
+			console.log("车辆修改id:"+id);
+    		$(function (){   			
+    			$.ajax({
+					url:"http://localhost:8080/car-repair/carinfo/showone.do",
+					type:"post",
+					data:{"id":id},
+					dataType:"json",
+					success:function(rs){
+						if(rs.status==0){
+							var ci=rs.data;
+							console.log("加载信息成功！");
+							$("#plate").val(ci.plate);
+							$("#brand").val(ci.brand);
+							$("#model").val(ci.model);
+							$("#color").val(ci.color);
+							$("#price").val(ci.price);
+							$("#date").val(ci.date);
+							$("#remark").val(ci.remark);
+						}else{
+							alert("车辆信息加载失败");
+						}
+					},
+					error:function(){
+						alert("发生异常，请稍后再试");
+					}
+				})
+				
+			})	
+    		
+				function update(){   		
+					var plate=$("#plate").val();
+					var brand=$("#brand").val();
+					var model=$("#model").val();
+					var color=$("#color").val();
+					var price=$("#price").val();
+					var date=$("#date").val();
+					var remark=$("#remark").val();
+					console.log(plate);
+					$.ajax({
+						url:"http://localhost:8080/car-repair/carinfo/update.do",
+						type:"post",
+						data:{"id":id,
+							"plate":plate,
+							"brand":brand,
+							"model":model,
+							"color":color,
+							"price":price,
+							"date":date,
+							"remark":remark},
+						dataType:"json",
+						success:function(rs){
+							console.log("车辆信息修改");
+							alert(rs.msg);
+							window.location.href="list.html";
+						},
+						error:function(){
+							alert("车辆信息修改成功");
+						}
+					})
+			};
+		}else{//用户ID不存在
+			top.location.href="login.html";
+		}
+    </script>  
+</head>
+<body>
+<div class="panel admin-panel">
+  <div class="panel-head" id="update"><strong><span class="icon-pencil-square-o"></span>车辆信息</strong></div>
+  <div class="body-content">
+    <form method="post" class="form-x" action="">  
+      <div class="form-group">
+        <div class="label">
+          <label>车牌：</label>
+        </div>
+        <div class="field">
+          <input type="text" class="input w50" value="" id="plate"/>
+          <div class="tips"></div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="label">
+          <label>品牌：</label>
+        </div>
+        <div class="field">
+          <input type="text" class="input w50" value="" id="brand" />
+          <div class="tips"></div>
+        </div>
+      </div>
+     
+      <div class="form-group">
+        <div class="label">
+          <label>型号：</label>
+        </div>
+        <div class="field">
+          <input type="text" class="input w50" value="" id="model"/>
+          <div class="tips"></div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="label">
+          <label>颜色：</label>
+        </div>
+        <div class="field">
+          <input type="text" class="input w50" value="" id="color"/>
+          <div class="tips"></div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="label">
+          <label>价格：</label>
+        </div>
+        <div class="field">
+          <input type="text" class="input w50" value="" id="price"/>
+          <div class="tips"></div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="label">
+          <label>购买日期：</label>
+        </div>
+        <div class="field">
+          <input class="input w50" id="date" onClick="laydate()"><br /><br />
+          <div class="tips"></div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="label">
+          <label>备注信息：</label>
+        </div>
+        <div class="field">
+          <textarea id="remark" class="input w50" style="height:120px;"></textarea>
+          <div class="tips"></div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="label">
+          <label></label>
+        </div>
+        <div class="field">
+          <button onclick="update()" class="button bg-main icon-check-square-o" type="submit"> 提交</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<script>
+;!function(){
+laydate({
+   elem: '#demo'
+})
+}();
+</script>
+</body></html>

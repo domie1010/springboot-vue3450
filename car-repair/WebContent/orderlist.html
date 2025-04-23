@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="renderer" content="webkit">
+<title></title>
+<link rel="stylesheet" href="css/pintuer.css">
+<link rel="stylesheet" href="css/admin.css">
+<script src="js/jquery.js"></script>
+<script src="js/pintuer.js"></script>
+ <script src="js/cookie_util.js"></script>
+     <script type="text/javascript">
+    	var user_id=getCookie("userId");
+		console.log(user_id);
+    	if(user_id!=null){//用户ID存在    		
+    		$(function (){
+    			$.ajax({
+					url:"http://localhost:8080/car-repair/orderinfo/showAll.do",
+					type:"post",
+					data:{},
+					dataType:"json",
+					success:function(rs){
+						if(rs.status==0){
+							var ois=rs.data;
+							creatOrderTr(ois);							
+						}else{
+							alert("订信息加载失败");
+						}
+					},
+					error:function(){
+						alert("发生异常，请稍后再试");
+					}
+				})		
+				
+			})	
+    	
+			function deal(){
+    			$.ajax({
+    				url:"http://localhost:8080/car-repair/orderinfo/deal.do",
+    				type:"post",
+    				data:{},
+    				dataType:"json",
+    				success:function(rs){
+    					if(rs.status==0){
+    						console.log("搜索成功");
+    						$("#orderinfos").html("");
+    						var ois=rs.data;
+    						creatOrderTr(ois);
+    					}else{
+    						alert(rs.msg);
+    					}
+    				},
+    				error:function(){
+    					alert("发生异常，请稍后再试");
+    				}
+    			})		
+    		}
+    	
+    		function undeal(){
+    			$.ajax({
+    				url:"http://localhost:8080/car-repair/orderinfo/undeal.do",
+    				type:"post",
+    				data:{},
+    				dataType:"json",
+    				success:function(rs){
+    					if(rs.status==0){
+    						console.log("搜索成功");
+    						$("#orderinfos").html("");
+    						var ois=rs.data;
+    						creatOrderTr(ois);
+    					}else{
+    						alert(rs.msg);
+    					}
+    				},
+    				error:function(){
+    					alert("发生异常，请稍后再试");
+    				}
+    			})		
+    		}
+    	
+    		
+    		function sort(){
+    			$.ajax({
+    				url:"http://localhost:8080/car-repair/orderinfo/sort.do",
+    				type:"post",
+    				data:{},
+    				dataType:"json",
+    				success:function(rs){
+    					if(rs.status==0){
+    						console.log("搜索成功");
+    						$("#orderinfos").html("");
+    						var ois=rs.data;
+    						creatOrderTr(ois);
+    					}else{
+    						alert(rs.msg);
+    					}
+    				},
+    				error:function(){
+    					alert("发生异常，请稍后再试");
+    				}
+    			})		
+    		}
+				
+			function search(){
+    			var keywords=$("#keywords").val();
+    			var type=$("#type").val();
+    			$.ajax({
+    				url:"http://localhost:8080/car-repair/orderinfo/searchorder.do",
+    				type:"post",
+    				data:{"type":type,"keywords":keywords},
+    				dataType:"json",
+    				success:function(rs){
+    					if(rs.status==0){
+    						console.log("搜索成功");
+    						$("#orderinfos").html("");
+							var ois=rs.data;
+							creatOrderTr(ois);							
+    					}else{
+    						alert(rs.msg);
+    					}
+    				},
+    				error:function(){
+    					alert("发生异常，请稍后再试");
+    				}
+    			})		
+    		}
+    	
+    		function creatOrderTr(ois){
+	    		for(var i=0;i<ois.length;i++){
+					var id=ois[i].id;
+					var user_name=ois[i].user_name;
+					var plate=ois[i].plate;
+					var trouble_name=ois[i].trouble_name;
+					var contact=ois[i].contact;
+					var contact_way=ois[i].contact_way;
+					var creart_time=ois[i].creart_time;
+					var status=ois[i].status;
+					var trs='<tr>';
+						trs+='<td>'+plate+'</td>';
+						trs+='<td>'+trouble_name+'</td>';
+						trs+='<td>'+user_name+'</td>';
+						trs+='<td>'+contact+'</td>';
+						trs+='<td>'+contact_way+'</td>';
+						trs+='<td>'+creart_time+'</td>';
+						if(status==0){
+							trs+='<td><font color="	#FF0000">未处理</td>';
+							trs+='<td><div class="button-group"> <button class="button border-main" onclick="change('+id+')"><span class="icon-edit"></span>处理</button> <button class="button border-red" href="javascript:void(0)" onclick="del('+id+')"><span class="icon-trash-o"></span> 删除</button> </div></td>';
+						}else{
+							trs+='<td><font color="#00CC99">已处理</td>';
+							trs+='<td><div class="button-group">  <button class="button border-red" href="javascript:void(0)" onclick="del('+id+')"><span class="icon-trash-o"></span> 删除</button> </div></td>';
+						}
+						trs+='</tr>';
+					var $trs=$(trs);
+					$("#orderinfos").append($trs);
+	    		}
+    		}
+    	
+		}else{//用户ID不存在
+			top.location.href="http://localhost:8080/car-repair/login.html"
+		}
+    </script>  
+</head>
+<body>
+<form method="post" action="" id="listform">
+  <div class="panel admin-panel">
+    <div class="panel-head"><strong class="icon-reorder"> 订单信息</strong> <a href="" style="float:right; display:none;">添加字段</a></div>
+ 	<div class="padding border-bottom">
+      <ul class="search" style="padding-left:10px;">
+      
+        <if condition="$iscid eq 1">
+          <li>
+            <select id="type" name="cid" class="input" style="width:110px; line-height:17px;">
+              <option value="">-请选择分类-</option>
+              <option value="1">车牌</option>
+              <option value="2">故障</option>
+              <option value="3">用户</option>
+              <option value="4">联系人</option>
+            </select>
+          </li>
+        </if>
+       	<li><input type="text" placeholder="请输入搜索关键字" id="keywords" class="input" style="width:250px; line-height:17px;display:inline-block" />
+          <input type="button" class="button border-main icon-search" onclick="search()" value="搜索"></input></li> 
+       
+       	<li> <input type="button" class="button border-main" onclick="sort()" value="按时间排序"></input></li>
+         <li> <input type="button" class="button border-main" onclick="deal()" value="显示已处理"></input></li>
+         <li> <input type="button" class="button border-main" onclick="undeal()" value="显示未处理"></input></li>
+      </ul>
+    </div>
+    <table class="table table-hover text-center">
+      <tr>
+        <th>车牌</th>
+        <th>故障</th>
+        <th>所属用户</th>
+        <th>联系人</th>
+        <th>联系方式</th>
+        <th>创建时间</th>
+        <th>状态</th>
+        <th width="310">操作</th>
+      </tr>
+      <tbody id="orderinfos">
+        
+       </tbody>
+
+    </table>
+  </div>
+</form> 
+<script type="text/javascript">	
+		function del(id){
+			console.log("订单删除id"+id);
+			$.ajax({
+				url:"http://localhost:8080/car-repair/orderinfo/delete.do",
+				type:"post",
+				data:{"id":id},
+				dataType:"json",
+				success:function(rs){
+					console.log("删除成功！");
+					alert(rs.msg);
+					window.location.href="orderlist.html";
+				},
+				error:function(){
+					alert("该订单已删除");
+				}
+			})
+		
+		};	
+		
+		
+		
+		function change(id){
+			console.log("用户"+id);
+			$.ajax({
+				url:"http://localhost:8080/car-repair/orderinfo/change.do",
+				type:"post",
+				data:{"id":id},
+				dataType:"json",
+				success:function(rs){
+					console.log("更改成功！");
+					alert(rs.msg);
+					window.location.href="orderlist.html";
+				},
+				error:function(){
+					alert("该订单已处理");
+				}
+			})
+		};
+		
+		
+</script>
+</body>
+</html>

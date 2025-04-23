@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="renderer" content="webkit">
+    <title>个人信息</title>  
+    <link rel="stylesheet" href="css/pintuer.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <script src="js/jquery.js"></script>
+    <script src="js/pintuer.js"></script> 
+    <script src="js/cookie_util.js"></script>
+    <script src="laydate/laydate.js"></script>
+     <script type="text/javascript">
+    	var user_id=getCookie("userId");
+		console.log(user_id);
+    	if(user_id!=null){//用户ID存在
+    		
+    		$(function (){
+    			$.ajax({
+					url:"http://localhost:8080/car-repair/personalinfo/show.do",
+					type:"post",
+					data:{"user_id":user_id},
+					dataType:"json",
+					success:function(rs){
+						if(rs.status==0){
+							var pi=rs.data;
+							console.log("加载信息成功！");
+							$("#realName").val(pi.real_name);
+							$("#sex").val(pi.sex);
+							$("#birthday").val(pi.birthday);
+							$("#email").val(pi.email);
+							$("#address").val(pi.address);
+							$("#tel_num").val(pi.tel_num);
+							$("#remark").val(pi.remark);
+						}else{
+							alert("个人信息加载失败");
+						}
+					},
+					error:function(){
+						alert("发生异常，请稍后再试");
+					}
+				})
+				
+			})	
+    			
+    			
+				function update(){
+					var real_name=$("#realName").val();
+					var sex=$('input:radio[name="sex"]:checked').val();
+					var birthday=$("#birthday").val();
+					var email=$("#email").val();
+					var address=$("#address").val();
+					var tel_num=$("#tel_num").val();
+					var remark=$("#remark").val();
+					console.log(sex);
+					$.ajax({
+						url:"http://localhost:8080/car-repair/personalinfo/update.do",
+						type:"post",
+						data:{"user_id":user_id,"real_name":real_name,"sex":sex,"birthday":birthday
+							,"email":email,"tel_num":tel_num,"address":address,"remark":remark},
+						dataType:"json",
+						success:function(rs){
+							alert("个人信息修改成功");
+							window.location.href="personalinfo.html";
+						},
+						error:function(){
+							alert("个人信息修改成功");
+						}
+					})
+
+				};
+		}else{//用户ID不存在
+			top.location.href="login.html";
+		}
+    </script>  
+</head>
+<body>
+<div class="panel admin-panel">
+  <div class="panel-head"><strong><span class="icon-pencil-square-o"></span> 个人信息</strong></div>
+  <div class="body-content">
+    <form method="post" class="form-x" action="">
+      <div class="form-group">
+        <div class="label">
+          <label>姓名：</label>
+        </div>
+        <div class="field">
+          <input type="text" class="input w50" id="realName" value="" />
+          <div class="tips"></div>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="label">
+          <label>性别：</label>
+        </div>
+        <div class="field">
+        &emsp;
+          <input type="radio" name="sex"  value="男" checked="checked"/>男
+         &emsp;
+          <input type="radio" name="sex"  value="女" />女
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="label">
+          <label>出生日期：</label>
+        </div>
+        <div class="field">
+          <input class="input w50" id="birthday" onClick="laydate()"><br /><br />
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="label">
+          <label>地址：</label>
+        </div>
+        <div class="field">
+          <input type="text" class="input w50" id="address" value="" />
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="label">
+          <label>手机号：</label>
+        </div>
+        <div class="field">
+          <input type="text" class="input w50" id="tel_num" value="" />
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="label">
+          <label>E-MAIL：</label>
+        </div>
+        <div class="field">
+          <input type="text" class="input w50" id="email" value="" />
+        </div>
+      </div>
+  
+              
+      <div class="form-group">
+        <div class="label">
+          <label>备注信息：</label>
+        </div>
+        <div class="field">
+          <textarea id="remark" class="input w50" style="height:120px;"></textarea>
+          <div class="tips"></div>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="label">
+          <label></label>
+        </div>
+        <div class="field">
+          <button onclick="update()" class="button bg-main icon-check-square-o" type="submit"> 提交</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+;!function(){
+laydate({
+   elem: '#demo'
+})
+}();
+</script>
+</body></html>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+ <mapper namespace="com.dao.PartsInfoDao">
+ 	
+ 	<select id="findAllParts" parameterType="string" resultType="com.entity.PartsInfo">
+ 		select * from parts_info
+ 	</select>
+ 	
+ 	
+ 	<update id="buyParts" parameterType="string">
+ 		UPDATE parts_info SET num=num+1 WHERE id=#{id}
+ 	</update>
+ 	<update id="useParts" parameterType="string">
+ 		UPDATE parts_info SET num=num-1 WHERE id=#{id}
+ 	</update>
+ </mapper>

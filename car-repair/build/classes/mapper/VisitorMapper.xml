@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+ <mapper namespace="com.dao.VisitorDao">
+ 	
+ 	<select id="visitorList" parameterType="string" resultType="com.entity.Visitor">
+ 		select * from visitor ORDER BY long_time DESC
+ 	</select>
+ 	
+ 	<delete id="delVisitor">
+ 		DELETE FROM visitor 
+ 		WHERE long_time = 
+ 		( SELECT v.t FROM (SELECT MIN(long_time) t FROM visitor) v)
+ 	</delete>
+ 	
+ 	<insert id="addVisitor" parameterType="com.entity.Visitor">
+ 		insert into visitor 
+ 		(id,v_name,v_time,long_time)
+ 		values
+ 		(#{id},#{v_name},#{v_time},#{long_time})
+ 	</insert>
+ </mapper>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+ <mapper namespace="com.dao.TroubleInfoDao"> 
+ 	<insert id="addTroubleInfo" parameterType="com.entity.TroubleInfo">
+ 		insert into trouble_info 
+ 		(id,trouble_code,trouble_name,trouble_remark,status)
+ 		values
+ 		(#{id},#{trouble_code},#{trouble_name},#{trouble_remark},#{status})
+ 	</insert>
+ 	
+ 	<select id="troubleList" parameterType="string" resultType="com.entity.TroubleInfo">
+ 		select * from trouble_info
+ 	</select>
+ 	
+ 	<select id="findTrouble" parameterType="string" resultType="com.entity.TroubleInfo">
+ 		select * from trouble_info where id=#{id}
+ 	</select>
+ 	
+ 	 <update id="changStatus" parameterType="com.entity.TroubleInfo">
+ 		update trouble_info set status=#{status}
+ 		where id=#{id}
+ 	</update>
+ </mapper>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="renderer" content="webkit">
+<title></title>
+<link rel="stylesheet" href="css/pintuer.css">
+<link rel="stylesheet" href="css/admin.css">
+<script src="js/jquery.js"></script>
+<script src="js/pintuer.js"></script>
+ <script src="js/cookie_util.js"></script>
+     <script type="text/javascript">
+    	var user_id=getCookie("userId");
+		console.log(user_id);
+    	if(user_id!=null){//用户ID存在    		
+    		$(function (){
+    			$.ajax({
+					url:"http://localhost:8080/car-repair/orderinfo/show.do",
+					type:"post",
+					data:{"user_id":user_id},
+					dataType:"json",
+					success:function(rs){
+						if(rs.status==0){
+							var ois=rs.data;
+							for(var i=0;i<ois.length;i++){
+								var id=ois[i].id;
+								var user_name=ois[i].user_name;
+								var plate=ois[i].plate;
+								var trouble_name=ois[i].trouble_name;
+								var contact=ois[i].contact;
+								var contact_way=ois[i].contact_way;
+								var creart_time=ois[i].creart_time;
+								var status=ois[i].status;
+								var trs='<tr>';
+									trs+='<td>'+plate+'</td>';
+									trs+='<td>'+trouble_name+'</td>';
+									trs+='<td>'+contact+'</td>';
+									trs+='<td>'+contact_way+'</td>';
+									trs+='<td>'+creart_time+'</td>';
+									if(status==0){
+										trs+='<td><font color="	#FF0000">未处理</td>';
+									}else{
+										trs+='<td><font color="#00CC99">已处理</td>';
+									}
+									trs+='</tr>';
+								var $trs=$(trs);
+								$("#orderinfos").append($trs);
+							}
+						}else{
+							alert("订信息加载失败");
+						}
+					},
+					error:function(){
+						alert("发生异常，请稍后再试");
+					}
+				})		
+				
+			})	
+				
+		}else{//用户ID不存在
+			top.location.href="http://localhost:8080/car-repair/login.html"
+		}
+    </script>  
+</head>
+<body>
+<form method="post" action="" id="listform">
+  <div class="panel admin-panel">
+    <div class="panel-head"><strong class="icon-reorder"> 维修信息</strong> <a href="" style="float:right; display:none;">添加字段</a></div>
+
+    <table class="table table-hover text-center">
+      <tr>
+        <th>车牌</th>
+        <th>故障</th>
+        <th>联系人</th>
+        <th>联系方式</th>
+        <th>创建时间</th>
+        <th>状态</th>
+      </tr>
+      <tbody id="orderinfos">
+        
+       </tbody>
+
+    </table>
+  </div>
+</form>
+
+</body>
+</html>
